@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Webbie Board – HTML Visualizer</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --panel: #020617;
+            --panel-soft: #111827;
+            --accent: #0ea5e9;
+            --accent-soft: #e0f2fe;
+            --border-subtle: #1f2937;
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --danger: #f97373;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #1d293b, #020617 65%);
+            color: var(--text-main);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .app-shell {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-header {
+            border-bottom: 1px solid var(--border-subtle);
+            background: linear-gradient(to right, rgba(15, 23, 42, 0.96), rgba(15, 23, 42, 0.92));
+            backdrop-filter: blur(18px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .app-header-inner {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0.9rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 20%, #0ea5e9, #0369a1 55%, #020617 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            box-shadow: 0 18px 40px rgba(8, 47, 73, 0.7);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title {
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            font-size: 1.05rem;
+        }
+
+        .brand-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pill {
+            font-size: 0.8rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.5);
+            color: var(--text-muted);
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.55rem 1rem;
+            border-radius: 999px;
+            border: none;
+            background: linear-gradient(135deg, #0ea5e9, #0369a1);
+            color: white;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            box-shadow: 0 14px 35px rgba(8, 47, 73, 0.65);
+            transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 20px 40px rgba(15, 118, 178, 0.75);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0px) scale(0.98);
+            box-shadow: 0 8px 24px rgba(15, 118, 178, 0.5);
+        }
+
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.55rem 0.9rem;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            background: transparent;
+            color: var(--text-main);
+            font-weight: 500;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+        }
+
+        .btn-ghost:hover {
+            background: rgba(15, 23, 42, 0.85);
+            border-color: rgba(148, 163, 184, 0.9);
+        }
+
+        .app-main {
+            flex: 1;
+            padding: 1rem 1.5rem 1.5rem;
+        }
+
+        .app-main-inner {
+            max-width: 90%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .intro-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .intro-text h1 {
+            margin: 0;
+            font-size: 1.2rem;
+            letter-spacing: 0.03em;
+        }
+
+        .intro-text p {
+            margin: 0.1rem 0 0;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .hint-chip {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            border-radius: 999px;
+            padding: 0.3rem 0.7rem;
+            border: 1px dashed rgba(148, 163, 184, 0.55);
+        }
+
+        .workspace {
+            display: grid;
+            grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
+            gap: 0.9rem;
+            align-items: stretch;
+        }
+
+        .sidebar {
+            background: radial-gradient(circle at top left, #0f172a, #020617 55%);
+            border-radius: 1.1rem;
+            border: 1px solid var(--border-subtle);
+            padding: 0.85rem 0.85rem 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.7rem;
+            box-shadow: 0 20px 60px rgba(15, 23, 42, 0.9);
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .sidebar-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .sidebar-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .widget-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.5rem;
+        }
+
+        .widget {
+            border-radius: 0.8rem;
+            border: 1px solid rgba(55, 65, 81, 0.95);
+            background: radial-gradient(circle at top left, rgba(15, 118, 178, 0.15), rgba(15, 23, 42, 0.95));
+            padding: 0.6rem 0.65rem;
+            cursor: grab;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            transition: border-color 0.12s ease, background 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease;
+            font-size: 0.78rem;
+            color: var(--text-main);
+        }
+
+        .widget:active {
+            cursor: grabbing;
+        }
+
+        .widget:hover {
+            border-color: rgba(56, 189, 248, 1);
+            box-shadow: 0 12px 26px rgba(8, 47, 73, 0.9);
+            transform: translateY(-1px);
+        }
+
+        .widget-label-main {
+            font-weight: 600;
+        }
+
+        .widget-label-sub {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            font-size: 0.74rem;
+            color: var(--text-muted);
+        }
+
+        .sidebar-footer strong {
+            color: var(--accent-soft);
+        }
+
+        .canvas-column {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .canvas-wrapper {
+            background: radial-gradient(circle at top, #020617, #020617 65%, #030712);
+            border-radius: 1.1rem;
+            border: 1px solid var(--border-subtle);
+            padding: 0.85rem;
+            box-shadow: 0 26px 70px rgba(15, 23, 42, 0.95);
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+            min-height: 320px;
+        }
+
+        .canvas-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .canvas-header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 0.1rem;
+        }
+
+        .canvas-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .canvas-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .canvas-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .btn-small {
+            border-radius: 999px;
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            background: rgba(15, 23, 42, 0.8);
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            padding: 0.25rem 0.65rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            cursor: pointer;
+            transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+        }
+
+        .btn-small:hover {
+            background: rgba(15, 23, 42, 0.95);
+            border-color: rgba(148, 163, 184, 0.95);
+            color: var(--accent-soft);
+        }
+
+        .btn-small.danger {
+            border-color: rgba(239, 68, 68, 0.6);
+            color: #fecaca;
+        }
+
+        .btn-small.danger:hover {
+            background: rgba(127, 29, 29, 0.85);
+            border-color: rgba(248, 113, 113, 0.95);
+            color: #fee2e2;
+        }
+
+        .canvas {
+            flex: 1;
+            border-radius: 0.9rem;
+            background: radial-gradient(circle at top left, #0f172a, #020617 55%);
+            border: 1px dashed rgba(55, 65, 81, 0.85);
+            padding: 1.1rem 1.2rem;
+            overflow: auto;
+        }
+
+        .canvas.empty::before {
+            content: "Drag a widget here or click one to add it.";
+            display: block;
+            text-align: center;
+            padding: 3rem 1rem;
+            color: rgba(148, 163, 184, 0.9);
+            font-size: 0.85rem;
+        }
+
+        .canvas-inner {
+            max-width: 780px;
+            margin: 0 auto;
+            background: #f9fafb;
+            border-radius: 0.8rem;
+            padding: 1.5rem 1.25rem;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+            color: #111827;
+        }
+
+        .canvas-item {
+            margin-bottom: 1rem;
+            cursor: pointer;
+        }
+
+        .canvas-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .canvas-item-selected {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .canvas h1,
+        .canvas h2,
+        .canvas h3,
+        .canvas p,
+        .canvas a,
+        .canvas button {
+            margin: 0;
+            font-family: inherit;
+        }
+
+        .canvas a {
+            color: #0369a1;
+        }
+
+        .canvas button {
+            padding: 0.6rem 1.4rem;
+            border-radius: 999px;
+            border: none;
+            background: #0ea5e9;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .canvas button:hover {
+            background: #0369a1;
+        }
+
+        .inspector {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+            gap: 0.75rem;
+        }
+
+        .panel {
+            background: radial-gradient(circle at top, #020617, #020617 60%, #020617);
+            border-radius: 1rem;
+            border: 1px solid var(--border-subtle);
+            padding: 0.85rem 0.95rem 0.95rem;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .panel-title {
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .panel-sub {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .panel-body {
+            font-size: 0.8rem;
+        }
+
+        .muted {
+            color: var(--text-muted);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 0.6rem 0.75rem;
+        }
+
+        .form-row-full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: flex;
+            flex-direction: column;
+            gap: 0.18rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .field-input,
+        .field-select,
+        .field-textarea {
+            border-radius: 0.55rem;
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            background: rgba(15, 23, 42, 0.9);
+            color: var(--text-main);
+            padding: 0.35rem 0.6rem;
+            font-size: 0.8rem;
+            outline: none;
+            width: 100%;
+        }
+
+        .field-input:focus,
+        .field-select:focus,
+        .field-textarea:focus {
+            border-color: rgba(56, 189, 248, 0.95);
+            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.75);
+        }
+
+        .field-textarea {
+            resize: vertical;
+            min-height: 130px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+                monospace;
+        }
+
+        .field-input[type="color"] {
+            padding: 0.1rem;
+            height: 1.8rem;
+            cursor: pointer;
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            border-radius: 999px;
+            padding: 0.18rem 0.55rem;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            color: var(--text-muted);
+        }
+
+        .badge-accent {
+            border-color: rgba(56, 189, 248, 0.8);
+            color: var(--accent-soft);
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            border-radius: 999px;
+            padding: 0.18rem 0.5rem;
+            border: 1px solid rgba(148, 163, 184, 0.7);
+            color: var(--text-muted);
+        }
+
+        .code-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .footer-note {
+            margin-top: 0.25rem;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            gap: 0.4rem;
+        }
+
+        @media (max-width: 980px) {
+            .workspace {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .inspector {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        @media (max-width: 720px) {
+            .app-header-inner {
+                padding-inline: 1rem;
+            }
+
+            .app-main {
+                padding-inline: 1rem;
+            }
+
+            .intro-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header-actions .pill {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <header class="app-header">
+            <div class="app-header-inner">
+                <div class="brand">
+                    <div class="brand-icon">WB</div>
+                    <div class="brand-text">
+                        <div class="brand-title">Webbie Board</div>
+                        <div class="brand-sub">Basic HTML Visualizer</div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="pill">Drag, tweak, then download HTML</div>
+                    <a href="WebbieBoard.html" class="btn-ghost">
+                        ← Back to landing
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <div class="app-main-inner">
+                <div class="intro-bar">
+                    <div class="intro-text">
+                        <h1>Visual builder for basic HTML widgets</h1>
+                        <p>Use the sidebar to drop headings, blocks, images, links, and buttons. Adjust styles, then
+                            export as plain HTML + CSS.</p>
+                    </div>
+                    <div class="hint-chip">Tip: you can also click a widget to add it to the canvas.</div>
+                </div>
+
+                <section class="workspace">
+                    <!-- SIDEBAR -->
+                    <aside class="sidebar">
+                        <div class="sidebar-header">
+                            <div>
+                                <div class="sidebar-title">Widget palette</div>
+                                <div class="sidebar-sub">Drag these into the canvas.</div>
+                            </div>
+                            <span class="badge badge-accent">Basic HTML only</span>
+                        </div>
+
+                        <div class="widget-list">
+                            <button class="widget" draggable="true" data-widget-type="heading">
+                                <span class="widget-label-main">Heading</span>
+                                <span class="widget-label-sub">&lt;h2&gt; section title</span>
+                            </button>
+                            <button class="widget" draggable="true" data-widget-type="text-block">
+                                <span class="widget-label-main">Text block</span>
+                                <span class="widget-label-sub">&lt;p&gt; paragraph</span>
+                            </button>
+                            <button class="widget" draggable="true" data-widget-type="header">
+                                <span class="widget-label-main">Header</span>
+                                <span class="widget-label-sub">&lt;header&gt; top section</span>
+                            </button>
+                            <button class="widget" draggable="true" data-widget-type="footer">
+                                <span class="widget-label-main">Footer</span>
+                                <span class="widget-label-sub">&lt;footer&gt; bottom section</span>
+                            </button>
+                            <button class="widget" draggable="true" data-widget-type="menu">
+                                <span class="widget-label-main">Menu</span>
+                                <span class="widget-label-sub">&lt;nav&gt; simple menu</span>
+                            </button>
+                            <button class="widget" draggable="true" data-widget-type="image">
+                                <span class="widget-label-main">Image</span>
+                                <span class="widget-label-sub">&lt;img&gt; with URL</span>
+                            </button>
+                            <button class="widget" draggable="true" data-widget-type="link">
+                                <span class="widget-label-main">Link</span>
+                                <span class="widget-label-sub">&lt;a&gt; click‑through</span>
+                            </button>
+                            <button class="widget" draggable="true" data-widget-type="button">
+                                <span class="widget-label-main">Button</span>
+                                <span class="widget-label-sub">&lt;button&gt; call‑to‑action</span>
+                            </button>
+                        </div>
+
+                        <div class="sidebar-footer">
+                            <div>Each widget generates plain HTML elements only.</div>
+                            <div><strong>No backend, no database.</strong> Just copy or download the final code.</div>
+                        </div>
+                    </aside>
+
+                    <!-- CANVAS + PROPERTIES -->
+                    <div class="canvas-column">
+                        <section class="canvas-wrapper">
+                            <div class="canvas-header">
+                                <div class="canvas-header-left">
+                                    <div class="canvas-title">Canvas (your mock page)</div>
+                                    <div class="canvas-sub">This right area is ~75% of the layout. Drop widgets here.
+                                    </div>
+                                </div>
+                                <div class="canvas-actions">
+                                    <button type="button" class="btn-small" id="btn-deselect">
+                                        ✕ Deselect
+                                    </button>
+                                    <button type="button" class="btn-small danger" id="btn-clear-canvas">
+                                        🗑 Clear canvas
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="canvas empty" id="canvas" data-empty="true">
+                                <div class="canvas-inner" id="canvas-inner">
+                                    <!-- Widgets will be injected here -->
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="inspector">
+                            <!-- PROPERTIES -->
+                            <section class="panel">
+                                <div class="panel-header">
+                                    <div>
+                                        <div class="panel-title">Widget properties</div>
+                                        <div class="panel-sub">Click a widget in the canvas to edit it.</div>
+                                    </div>
+                                    <span class="tag" id="selection-tag">None selected</span>
+                                </div>
+                                <div class="panel-body" id="properties-panel">
+                                    <div id="properties-empty" class="muted">
+                                        No widget selected. Click something in the canvas (or add a new widget) to begin
+                                        editing its basic styles.
+                                    </div>
+                                    <form id="properties-form" style="display: none;">
+                                        <div class="form-grid">
+                                            <div class="form-row-full">
+                                                <div class="muted" style="margin-bottom:0.35rem;">
+                                                    Editing
+                                                    <strong id="prop-kind-label"></strong>
+                                                </div>
+                                            </div>
+
+                                            <label class="form-row-full" id="row-text">
+                                                Text / label
+                                                <input type="text" id="prop-text" class="field-input"
+                                                    placeholder="Heading, button label, or link text" />
+                                            </label>
+
+                                            <label id="row-font-size">
+                                                Font size (px)
+                                                <input type="number" id="prop-font-size" class="field-input" min="10"
+                                                    max="72" placeholder="e.g. 20" />
+                                            </label>
+
+                                            <label id="row-font-family">
+                                                Font family
+                                                <select id="prop-font-family" class="field-select">
+                                                    <option
+                                                        value="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+                                                        Sans‑serif
+                                                    </option>
+                                                    <option value="'Georgia', serif">Serif</option>
+                                                    <option value="'Courier New', monospace">Monospace</option>
+                                                </select>
+                                            </label>
+
+                                            <label id="row-text-color">
+                                                Text color
+                                                <input type="color" id="prop-text-color" class="field-input"
+                                                    value="#111827" />
+                                            </label>
+
+                                            <label id="row-bg-color">
+                                                Background color
+                                                <input type="color" id="prop-bg-color" class="field-input"
+                                                    value="#ffffff" />
+                                            </label>
+
+                                            <label id="row-image-url" class="form-row-full">
+                                                Image URL
+                                                <input type="text" id="prop-image-url" class="field-input"
+                                                    placeholder="https://example.com/image.png" />
+                                                <span class="muted" style="font-size:0.7rem; margin-top:0.15rem;">
+                                                    Tip: open a free photo site like
+                                                    <a href="https://unsplash.com/" target="_blank" rel="noopener noreferrer">Unsplash</a>,
+                                                    right‑click an image, choose “Copy image address”, then paste it here.
+                                                </span>
+                                            </label>
+
+                                            <label id="row-link-href" class="form-row-full">
+                                                Link URL
+                                                <input type="text" id="prop-link-href" class="field-input"
+                                                    placeholder="https://example.com" />
+                                            </label>
+                                        </div>
+
+                                        <div style="margin-top:0.6rem; display:flex; justify-content:space-between; gap:0.4rem; align-items:center;">
+                                            <button type="button" class="btn-small danger" id="btn-delete-element">
+                                                Remove selected widget
+                                            </button>
+                                            <span class="muted" style="font-size:0.72rem;">
+                                                Changes are applied live in the canvas.
+                                            </span>
+                                        </div>
+                                    </form>
+                                </div>
+                            </section>
+
+                            <!-- GENERATED CODE -->
+                            <section class="panel">
+                                <div class="panel-header">
+                                    <div>
+                                        <div class="panel-title">Generated HTML + CSS</div>
+                                        <div class="panel-sub">
+                                            This is the only output of the tool. No database or extra files.
+                                        </div>
+                                    </div>
+                                    <div class="code-actions">
+                                        <button type="button" class="btn-small" id="btn-generate">
+                                            ↻ Refresh code
+                                        </button>
+                                        <button type="button" class="btn-small" id="btn-download">
+                                            ⬇ Download .html
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <textarea id="code-output" class="field-textarea"
+                                        spellcheck="false"></textarea>
+                                    <div class="footer-note">
+                                        <span>Copy‑paste this into your project, or use the download button.</span>
+                                        <span>Contains only basic HTML and a small &lt;style&gt; block.</span>
+                                    </div>
+                                </div>
+                            </section>
+                        </section>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        (function () {
+            const canvas = document.getElementById("canvas");
+            const canvasInner = document.getElementById("canvas-inner");
+            const widgets = Array.from(document.querySelectorAll(".widget"));
+
+            const selectionTag = document.getElementById("selection-tag");
+            const propertiesEmpty = document.getElementById("properties-empty");
+            const propertiesForm = document.getElementById("properties-form");
+            const propKindLabel = document.getElementById("prop-kind-label");
+            const propertiesPanel = document.getElementById("properties-panel");
+
+            const inputText = document.getElementById("prop-text");
+            const inputFontSize = document.getElementById("prop-font-size");
+            const inputFontFamily = document.getElementById("prop-font-family");
+            const inputTextColor = document.getElementById("prop-text-color");
+            const inputBgColor = document.getElementById("prop-bg-color");
+            const inputImageUrl = document.getElementById("prop-image-url");
+            const inputLinkHref = document.getElementById("prop-link-href");
+
+            const rowText = document.getElementById("row-text");
+            const rowFontSize = document.getElementById("row-font-size");
+            const rowFontFamily = document.getElementById("row-font-family");
+            const rowTextColor = document.getElementById("row-text-color");
+            const rowBgColor = document.getElementById("row-bg-color");
+            const rowImageUrl = document.getElementById("row-image-url");
+            const rowLinkHref = document.getElementById("row-link-href");
+
+            const btnDeselect = document.getElementById("btn-deselect");
+            const btnClearCanvas = document.getElementById("btn-clear-canvas");
+            const btnDeleteElement = document.getElementById("btn-delete-element");
+            const btnGenerate = document.getElementById("btn-generate");
+            const btnDownload = document.getElementById("btn-download");
+
+            const codeOutput = document.getElementById("code-output");
+
+            let currentSelection = null;
+            let widgetCounter = 0;
+
+            function updateCanvasEmptyState() {
+                const hasChildren = canvasInner.children.length > 0;
+                if (hasChildren) {
+                    canvas.classList.remove("empty");
+                    canvas.dataset.empty = "false";
+                } else {
+                    canvas.classList.add("empty");
+                    canvas.dataset.empty = "true";
+                }
+            }
+
+            function clearSelection() {
+                if (currentSelection) {
+                    currentSelection.classList.remove("canvas-item-selected");
+                }
+                currentSelection = null;
+                selectionTag.textContent = "None selected";
+                propertiesForm.style.display = "none";
+                propertiesEmpty.style.display = "block";
+            }
+
+            function describeKind(kind) {
+                switch (kind) {
+                    case "heading":
+                        return "Heading (&lt;h2&gt;)";
+                    case "text-block":
+                        return "Text block (&lt;p&gt;)";
+                    case "header":
+                        return "Header section (&lt;header&gt;)";
+                    case "footer":
+                        return "Footer section (&lt;footer&gt;)";
+                    case "menu":
+                        return "Menu bar (&lt;nav&gt;)";
+                    case "image":
+                        return "Image (&lt;img&gt;)";
+                    case "link":
+                        return "Link (&lt;a&gt;)";
+                    case "button":
+                        return "Button (&lt;button&gt;)";
+                    default:
+                        return kind;
+                }
+            }
+
+            function resetFormVisibility(kind) {
+                rowText.style.display = "none";
+                rowFontSize.style.display = "none";
+                rowFontFamily.style.display = "none";
+                rowTextColor.style.display = "none";
+                rowBgColor.style.display = "none";
+                rowImageUrl.style.display = "none";
+                rowLinkHref.style.display = "none";
+
+                if (kind === "heading" || kind === "text-block" || kind === "link" || kind === "button" || kind === "header" || kind === "footer" || kind === "menu") {
+                    rowText.style.display = "block";
+                    rowFontSize.style.display = "block";
+                    rowFontFamily.style.display = "block";
+                    rowTextColor.style.display = "block";
+                }
+
+                if (kind === "button" || kind === "header" || kind === "footer" || kind === "menu") {
+                    rowBgColor.style.display = "block";
+                }
+
+                if (kind === "image") {
+                    rowImageUrl.style.display = "block";
+                }
+
+                if (kind === "link") {
+                    rowLinkHref.style.display = "block";
+                }
+            }
+
+            function selectElement(el) {
+                if (!el) return;
+                if (currentSelection === el) return;
+
+                if (currentSelection) {
+                    currentSelection.classList.remove("canvas-item-selected");
+                }
+
+                currentSelection = el;
+                el.classList.add("canvas-item-selected");
+
+                const kind = el.dataset.widgetType || "element";
+                selectionTag.textContent = describeKind(kind);
+                propKindLabel.textContent = describeKind(kind);
+                propertiesEmpty.style.display = "none";
+                propertiesForm.style.display = "block";
+
+                resetFormVisibility(kind);
+
+                inputText.value = "";
+                inputFontSize.value = "";
+                inputFontFamily.value =
+                    "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+                inputTextColor.value = "#111827";
+                inputBgColor.value = "#ffffff";
+                inputImageUrl.value = "";
+                inputLinkHref.value = "";
+
+                if (kind === "heading" || kind === "text-block" || kind === "link" || kind === "button" || kind === "header" || kind === "footer" || kind === "menu") {
+                    inputText.value = el.textContent || "";
+                }
+
+                if (kind === "image") {
+                    inputImageUrl.value = el.getAttribute("src") || "";
+                }
+
+                if (kind === "link") {
+                    inputLinkHref.value = el.getAttribute("href") || "";
+                }
+            }
+
+            function createWidget(kind) {
+                let el;
+                widgetCounter++;
+                const id = "widget-" + widgetCounter;
+
+                switch (kind) {
+                    case "heading":
+                        el = document.createElement("h2");
+                        el.textContent = "Section heading";
+                        el.style.fontSize = "24px";
+                        el.style.marginBottom = "0.75rem";
+                        break;
+                    case "text-block":
+                        el = document.createElement("p");
+                        el.textContent =
+                            "This is a simple paragraph where you can describe your content.";
+                        el.style.fontSize = "15px";
+                        el.style.lineHeight = "1.5";
+                        break;
+                    case "header":
+                        el = document.createElement("header");
+                        el.textContent = "Header – put your logo and main title here.";
+                        el.style.padding = "1rem 1.25rem";
+                        el.style.borderRadius = "0.6rem";
+                        el.style.backgroundColor = "#0f172a";
+                        el.style.color = "#f9fafb";
+                        el.style.fontSize = "16px";
+                        break;
+                    case "footer":
+                        el = document.createElement("footer");
+                        el.textContent = "Footer – copyright or links go here.";
+                        el.style.padding = "0.9rem 1.25rem";
+                        el.style.borderRadius = "0.6rem";
+                        el.style.backgroundColor = "#111827";
+                        el.style.color = "#9ca3af";
+                        el.style.fontSize = "13px";
+                        break;
+                    case "menu":
+                        el = document.createElement("nav");
+                        el.textContent = "Home · About · Contact";
+                        el.style.padding = "0.7rem 1.1rem";
+                        el.style.borderRadius = "999px";
+                        el.style.backgroundColor = "#e5f3ff";
+                        el.style.color = "#0f172a";
+                        el.style.fontSize = "14px";
+                        break;
+                    case "image":
+                        el = document.createElement("img");
+                        el.src = "https://via.placeholder.com/640x320?text=Your+image";
+                        el.alt = "Placeholder image";
+                        el.style.display = "block";
+                        el.style.width = "100%";
+                        el.style.borderRadius = "0.5rem";
+                        break;
+                    case "link":
+                        el = document.createElement("a");
+                        el.href = "https://example.com";
+                        el.textContent = "Visit example.com";
+                        el.style.fontSize = "14px";
+                        break;
+                    case "button":
+                        el = document.createElement("button");
+                        el.type = "button";
+                        el.textContent = "Click me";
+                        el.style.backgroundColor = "#0ea5e9";
+                        el.style.color = "#ffffff";
+                        el.style.borderRadius = "999px";
+                        el.style.padding = "0.6rem 1.4rem";
+                        el.style.fontWeight = "600";
+                        el.style.border = "none";
+                        el.style.cursor = "pointer";
+                        break;
+                    default:
+                        el = document.createElement("div");
+                        el.textContent = "New element";
+                }
+
+                el.classList.add("canvas-item");
+                el.dataset.widgetType = kind;
+                el.id = id;
+
+                el.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    selectElement(el);
+                });
+
+                return el;
+            }
+
+            widgets.forEach((w) => {
+                const kind = w.dataset.widgetType;
+
+                w.addEventListener("dragstart", (e) => {
+                    e.dataTransfer.setData("text/plain", kind);
+                    e.dataTransfer.effectAllowed = "copy";
+                });
+
+                w.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const el = createWidget(kind);
+                    canvasInner.appendChild(el);
+                    updateCanvasEmptyState();
+                    selectElement(el);
+                });
+            });
+
+            canvas.addEventListener("dragover", (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = "copy";
+            });
+
+            canvas.addEventListener("drop", (e) => {
+                e.preventDefault();
+                const kind = e.dataTransfer.getData("text/plain");
+                if (!kind) return;
+                const el = createWidget(kind);
+                canvasInner.appendChild(el);
+                updateCanvasEmptyState();
+                selectElement(el);
+            });
+
+            document.addEventListener("click", (e) => {
+                // Only clear selection when clicking completely outside
+                // both the canvas and the properties panel.
+                if (!canvas.contains(e.target) && !(propertiesPanel && propertiesPanel.contains(e.target))) {
+                    clearSelection();
+                }
+            });
+
+            btnDeselect.addEventListener("click", (e) => {
+                e.stopPropagation();
+                clearSelection();
+            });
+
+            btnClearCanvas.addEventListener("click", () => {
+                canvasInner.innerHTML = "";
+                clearSelection();
+                updateCanvasEmptyState();
+                updateGeneratedCode();
+            });
+
+            btnDeleteElement.addEventListener("click", () => {
+                if (!currentSelection) return;
+                currentSelection.remove();
+                clearSelection();
+                updateCanvasEmptyState();
+                updateGeneratedCode();
+            });
+
+            inputText.addEventListener("input", () => {
+                if (!currentSelection) return;
+                const kind = currentSelection.dataset.widgetType;
+                if (kind === "heading" || kind === "text-block" || kind === "link" || kind === "button") {
+                    currentSelection.textContent = inputText.value;
+                }
+                updateGeneratedCode();
+            });
+
+            inputFontSize.addEventListener("input", () => {
+                if (!currentSelection) return;
+                const px = parseInt(inputFontSize.value, 10);
+                if (!isNaN(px)) {
+                    currentSelection.style.fontSize = px + "px";
+                    updateGeneratedCode();
+                }
+            });
+
+            inputFontFamily.addEventListener("change", () => {
+                if (!currentSelection) return;
+                currentSelection.style.fontFamily = inputFontFamily.value;
+                updateGeneratedCode();
+            });
+
+            inputTextColor.addEventListener("input", () => {
+                if (!currentSelection) return;
+                currentSelection.style.color = inputTextColor.value;
+                updateGeneratedCode();
+            });
+
+            inputBgColor.addEventListener("input", () => {
+                if (!currentSelection) return;
+                currentSelection.style.backgroundColor = inputBgColor.value;
+                updateGeneratedCode();
+            });
+
+            inputImageUrl.addEventListener("input", () => {
+                if (!currentSelection) return;
+                if (currentSelection.dataset.widgetType === "image") {
+                    currentSelection.setAttribute("src", inputImageUrl.value);
+                    updateGeneratedCode();
+                }
+            });
+
+            inputLinkHref.addEventListener("input", () => {
+                if (!currentSelection) return;
+                if (currentSelection.dataset.widgetType === "link") {
+                    currentSelection.setAttribute("href", inputLinkHref.value);
+                    updateGeneratedCode();
+                }
+            });
+
+            const baseCss = [
+                "body {",
+                "  margin: 0;",
+                "  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;",
+                "  background: #f3f4f6;",
+                "  color: #111827;",
+                "}",
+                "",
+                ".page {",
+                "  max-width: 900px;",
+                "  margin: 2.5rem auto;",
+                "  padding: 2rem 1.5rem;",
+                "  background: #ffffff;",
+                "  border-radius: 0.85rem;",
+                "  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.10);",
+                "}",
+                "",
+                ".page h1,",
+                ".page h2,",
+                ".page h3 {",
+                "  margin-top: 0;",
+                "  margin-bottom: 0.75rem;",
+                "}",
+                "",
+                ".page p {",
+                "  margin-top: 0;",
+                "  margin-bottom: 0.75rem;",
+                "}",
+                "",
+                ".page a {",
+                "  color: #0369a1;",
+                "  text-decoration: none;",
+                "}",
+                "",
+                ".page a:hover {",
+                "  text-decoration: underline;",
+                "}",
+                "",
+                ".page button {",
+                "  padding: 0.6rem 1.4rem;",
+                "  border-radius: 999px;",
+                "  border: none;",
+                "  background: #0ea5e9;",
+                "  color: #ffffff;",
+                "  font-weight: 600;",
+                "  cursor: pointer;",
+                "}",
+                "",
+                ".page button:hover {",
+                "  background: #0369a1;",
+                "}",
+                "",
+                ".page > * + * {",
+                "  margin-top: 1rem;",
+                "}"
+            ].join("\n");
+
+            function buildGeneratedHtml() {
+                const clone = canvasInner.cloneNode(true);
+
+                clone.querySelectorAll(".canvas-item-selected").forEach((el) => {
+                    el.classList.remove("canvas-item-selected");
+                });
+
+                const innerHtml = clone.innerHTML.trim();
+                const bodyContent = innerHtml || "<!-- Canvas is empty. Add widgets in the visualizer. -->";
+
+                const doc = [
+                    "<!DOCTYPE html>",
+                    '<html lang="en">',
+                    "<head>",
+                    '  <meta charset="UTF-8" />',
+                    '  <meta name="viewport" content="width=device-width, initial-scale=1.0" />',
+                    "  <title>My Webbie Board layout</title>",
+                    "  <style>",
+                    baseCss,
+                    "  </style>",
+                    "</head>",
+                    "<body>",
+                    '  <main class="page">',
+                    bodyContent
+                        .split("\n")
+                        .map(function (line) {
+                            return "    " + line;
+                        })
+                        .join("\n"),
+                    "  </main>",
+                    "</body>",
+                    "</html>"
+                ].join("\n");
+
+                return doc;
+            }
+
+            function updateGeneratedCode() {
+                const doc = buildGeneratedHtml();
+                codeOutput.value = doc;
+            }
+
+            btnGenerate.addEventListener("click", () => {
+                updateGeneratedCode();
+                codeOutput.focus();
+                codeOutput.selectionStart = 0;
+                codeOutput.selectionEnd = 0;
+            });
+
+            btnDownload.addEventListener("click", () => {
+                const doc = buildGeneratedHtml();
+                const blob = new Blob([doc], { type: "text/html" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "webbie-layout.html";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
+
+            updateCanvasEmptyState();
+            updateGeneratedCode();
+        })();
+    </script>
+</body>
+</html>
+
