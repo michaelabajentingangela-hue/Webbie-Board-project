@@ -1230,6 +1230,15 @@
                 "",
                 ".page > * + * {",
                 "  margin-top: 1rem;",
+                "}",
+                "",
+                ".webbie-watermark {",
+                "  margin-top: 2rem;",
+                "  font-size: 0.75rem;",
+                "  color: #6b7280;",
+                "  text-align: right;",
+                "  border-top: 1px dashed #e5e7eb;",
+                "  padding-top: 0.75rem;",
                 "}"
             ].join("\n");
 
@@ -1250,6 +1259,7 @@
                     '  <meta charset="UTF-8" />',
                     '  <meta name="viewport" content="width=device-width, initial-scale=1.0" />',
                     "  <title>My Webbie Board layout</title>",
+                    "  <!-- Generated with Webbie Board (learning tool). Encourage students to explain and modify this code, not just submit it as-is. -->",
                     "  <style>",
                     baseCss,
                     "  </style>",
@@ -1262,6 +1272,9 @@
                             return "    " + line;
                         })
                         .join("\n"),
+                    '    <footer class="webbie-watermark">',
+                    '      Built with Webbie Board – for learning and practice, not final submissions.',
+                    "    </footer>",
                     "  </main>",
                     "</body>",
                     "</html>"
